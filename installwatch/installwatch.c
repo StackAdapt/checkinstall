@@ -109,7 +109,7 @@ static int (*true_scandir)(	const char *,struct dirent ***,
 
 static int (*true_scandir)(	const char *,struct dirent ***,
 				int (*)(const struct dirent *),
-				int (*)(const struct dirent **,const struct dirent **));
+				int (*)(const void *,const void *));
 #endif
 
 static int (*true_symlink)(const char *, const char *);
@@ -133,7 +133,7 @@ static struct dirent64 *(*true_readdir64)(DIR *dir);
 #if(GLIBC_MINOR >= 10)
 static int (*true_scandir64)(	const char *,struct dirent64 ***,
 				int (*)(const struct dirent64 *),
-				int (*)(const void *,const void *));
+				int (*)(const struct dirent64 **,const struct dirent64 **));
 #else
 static int (*true_scandir64)(	const char *,struct dirent64 ***,
 				int (*)(const struct dirent64 *),
