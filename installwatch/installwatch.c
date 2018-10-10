@@ -133,11 +133,11 @@ static struct dirent64 *(*true_readdir64)(DIR *dir);
 #if(GLIBC_MINOR >= 10)
 static int (*true_scandir64)(	const char *,struct dirent64 ***,
 				int (*)(const struct dirent64 *),
-				int (*)(const struct dirent64 **,const struct dirent64 **));
+				int (*)(const void *,const void *));
 #else
 static int (*true_scandir64)(	const char *,struct dirent64 ***,
 				int (*)(const struct dirent64 *),
-				int (*)(const struct dirent64 **,const struct dirent64 **));
+				int (*)(const void *,const void *));
 #endif
 static int (*true_xstat64)(int,const char *, struct stat64 *);
 static int (*true_lxstat64)(int,const char *, struct stat64 *);
@@ -2958,7 +2958,7 @@ struct dirent *readdir(DIR *dir) {
 	return result;
 }
 
-#if (0)
+#if (GLIBC_MINOR <= 4)
 int readlink(const char *path,char *buf,size_t bufsiz) {
 	int result;
 #else
@@ -3102,7 +3102,7 @@ int scandir(	const char *dir,struct dirent ***namelist,
 #if (GLIBC_MINOR >= 10)
 		int (*compar)(const struct dirent **,const struct dirent **)	) {
 #else
-		int (*compar)(const struct dirent **,const struct dirent **)	) {
+		int (*compar)(const void *,const void *)	) {
 #endif
 	int result;
 
@@ -3718,7 +3718,7 @@ int scandir64(	const char *dir,struct dirent64 ***namelist,
 #if (GLIBC_MINOR >= 10)
 		int (*compar)(const struct dirent64 **,const struct dirent64 **)	) {
 #else
-		int (*compar)(const struct dirent64 **,const struct dirent64 **)	) {
+		int (*compar)(const void *,const void *)	) {
 #endif
 	int result;
 

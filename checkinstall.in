@@ -61,7 +61,7 @@ function followlinks () {
     fi
 }
 
-INSTALLDIR=/usr/local
+INSTALLDIR=MAKEFILE_PREFIX
 
 # gettext variables
 export TEXTDOMAINDIR="$INSTALLDIR"/lib/checkinstall/locale
@@ -476,10 +476,10 @@ function copy_dir_hierarchy {
     if [ $? -eq 0 ]; then
         if [ $deref_parents -eq 1 ]; then
             # Add the -h option to the tar command for dereferencing
-            $TAR --no-recursion -C "${root}" -cphf - $files | $TAR -f - -xvpPC \
+            $TAR --no-recursion -C "${root}" -cphf - $files | $TAR -f - -xvpC \
                 "${dest}"
         else 
-            $TAR --no-recursion -C "${root}" -cpf - $files | $TAR -f - -xvpPC \
+            $TAR --no-recursion -C "${root}" -cpf - $files | $TAR -f - -xvpC \
                 "${dest}"
         fi
 
