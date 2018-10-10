@@ -61,7 +61,7 @@ function followlinks () {
     fi
 }
 
-INSTALLDIR=MAKEFILE_PREFIX
+INSTALLDIR=/usr/local
 
 # gettext variables
 export TEXTDOMAINDIR="$INSTALLDIR"/lib/checkinstall/locale
@@ -476,10 +476,10 @@ function copy_dir_hierarchy {
     if [ $? -eq 0 ]; then
         if [ $deref_parents -eq 1 ]; then
             # Add the -h option to the tar command for dereferencing
-            $TAR --no-recursion -C "${root}" -cphf - $files | $TAR -f - -xvpC \
+            $TAR --no-recursion -C "${root}" -cphf - $files | $TAR -f - -xvpPC \
                 "${dest}"
         else 
-            $TAR --no-recursion -C "${root}" -cpf - $files | $TAR -f - -xvpC \
+            $TAR --no-recursion -C "${root}" -cpf - $files | $TAR -f - -xvpPC \
                 "${dest}"
         fi
 
@@ -1816,7 +1816,12 @@ if [ $INSTALL_FAILED -gt 0 ]; then
 			| $TAR -f - -xvpC "${BUILD_DIR}"  >> $LOGFILE 2>&1
 		fi
             done
-            truefile=`echo ${file} | sed 's/^\.//'`
+            echo ${file} | grep symlink > /dev/null
+            if [ $? -ne 0 ]; then
+               truefile=`echo ${file} | sed 's/^\.//' | awk '{print $3}'`
+            else
+               truefile=`echo ${file} | sed 's/^\.//' | awk '{print $4}'`
+            fi
             # No recursion here: if $file is a directory, then the files created
             # in it will follow.
             grep "${truefile}$" "${NEWFILES}" &>/dev/null
@@ -2328,7 +2333,7 @@ if ! [ $FAILED -gt 0 ]; then
 
 # Identify the rpm version
 
-RPM_VERSION=`rpm --version | awk '{ print $3 }'`
+RPM_VERSION=`rpm --version | sed "s/^.* \([0-9]\)/\1/"
 RPM_MAJOR_VERSION=`echo $RPM_VERSION | cut -f1 -d"."`
 RPM_MINOR_VERSION=`echo $RPM_VERSION | cut -f2 -d"."`
 RPM_PATCH_LEVEL=`echo $RPM_VERSION | cut -f3 -d"."`
